@@ -1,5 +1,6 @@
 #include "Sender.h"
-#include "../Util/Util.h"
+#include "../Util/UuidHash.h"
+#include <boost/uuid/random_generator.hpp>
 #include <algorithm>
 
 gsl::Event::Sender::Sender() {
@@ -9,7 +10,7 @@ gsl::Event::Sender::~Sender() {
 }
 
 gsl::Event::Connection gsl::Event::Sender::RegisterEvent(const s3d::String & Name, const Function::EventType & Event) {
-  std::size_t hash = std::hash<s3d::String>()(Util::GenerateUUID());
+  std::size_t hash = Util::UuidHash()(boost::uuids::random_generator()());
   this->event_[Name].emplace_back(Event, hash);
   auto searchreg = [this](const s3d::String& EventName, std::size_t Hash) {
     auto it = this->event_.find(EventName);
